@@ -23,6 +23,7 @@ function Pokelist(props) {
         });
     }, []);
 
+    console.log(pokemonList)
     return (
         <Container>
             {pokemonList.map((pokemon) => (
