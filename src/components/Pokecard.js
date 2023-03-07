@@ -41,28 +41,30 @@ const TypeText = styled.span`
 `
 
 function Pokecard(props) {
-    const { url, openModal, name } = props
+    const { url, openModal } = props
 
-    const [allPokemonDetails, setAllPokemonDetails] = useState({})
-
-    const [pokemonNumber, setPokemonNumber] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
-    const [pokemonTypes, setPokemonTypes] = useState([]);
+    const [pokemonDetails, setPokemonDetails] = useState(null)
 
     useEffect(() => {
         axios.get(url).then((response) => {
-            setImageUrl(response.data.sprites.front_default);
-            setPokemonNumber(response.data.id);
-            setPokemonTypes(response.data.types.map((type) => type.type.name));
-            setAllPokemonDetails(response.data)
+            setPokemonDetails(response.data)
         });
     }, [url]);
 
+    if (!pokemonDetails) {
+        return <p>Loading...</p>
+    }
+
+    const pokemonName = pokemonDetails.name
+    const imageUrl = pokemonDetails.sprites.front_default
+    const pokemonNumber = pokemonDetails.sprites.id
+    const pokemonTypes = pokemonDetails.types.map(type => type.type.name)
+
     return (
-        <Container firstType={pokemonTypes[0]} onClick={() => openModal(allPokemonDetails)}>
-            <Name>{name}</Name>
+        <Container firstType={pokemonTypes[0]} onClick={() => openModal(pokemonDetails)}>
+            <Name>{pokemonName}</Name>
             
-            <Image src={imageUrl} alt={name} />
+            <Image src={imageUrl} alt={pokemonName} />
             
             <Types>
                 {pokemonTypes.map((type) => (
